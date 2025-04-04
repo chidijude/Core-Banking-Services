@@ -33,7 +33,6 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
         //     - handlers can fail
 
         int result = await base.SaveChangesAsync(cancellationToken);
-
         await PublishDomainEventsAsync();
 
         return result;

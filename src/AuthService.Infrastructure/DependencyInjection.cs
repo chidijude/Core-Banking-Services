@@ -2,7 +2,6 @@
 using AuthService.Application.Abstractions.Authentication;
 using AuthService.Application.Abstractions.Data;
 using SharedKernel.Infrastructure.Authorization;
-using Infrastructure.Database;
 using SharedKernel.Infrastructure.Time;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;

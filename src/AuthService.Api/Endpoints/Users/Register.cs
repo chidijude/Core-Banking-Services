@@ -22,8 +22,12 @@ internal sealed class Register : IEndpoint
 
             Result<Guid> result = await sender.Send(command, cancellationToken);
 
-            return result.Match(Results.Ok, CustomResults.Problem);
+            //return result.Match(Results.Ok, CustomResults.Problem);
+            return result.Match(CreatedAtRoute, CustomResults.Problem);
         })
         .WithTags(Tags.Users);
     }
+
+    public static IResult CreatedAtRoute<TValue>(TValue userId)
+     => Results.CreatedAtRoute<object>("GetByUserId", new { userId }, userId);
 }

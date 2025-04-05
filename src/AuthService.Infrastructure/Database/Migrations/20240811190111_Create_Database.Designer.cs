@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Infrastructure.Database.Migrations
+namespace AuthService.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20240811190111_Create_Database")]

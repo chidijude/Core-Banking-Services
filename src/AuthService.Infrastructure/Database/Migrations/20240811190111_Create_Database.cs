@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Infrastructure.Database.Migrations
+namespace AuthService.Infrastructure.Database.Migrations
 {
     /// <inheritdoc />
     public partial class Create_Database : Migration

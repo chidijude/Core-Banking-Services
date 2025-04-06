@@ -14,6 +14,9 @@ using SharedKernel;
 using AuthService.Infrastructure.Database;
 using AuthService.Infrastructure.Authentication;
 using SharedKernel.Infrastructure.Database;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
+using System.Text.Json;
 
 namespace AuthService.Infrastructure;
 
@@ -26,6 +29,7 @@ public static class DependencyInjection
             .AddServices()
             .AddDatabase(configuration)
             .AddHealthChecks(configuration)
+            .AddHttpContextAccessor()
             .AddAuthenticationInternal(configuration)
             .AddAuthorizationInternal();
 
@@ -75,6 +79,49 @@ public static class DependencyInjection
                     ValidAudience = configuration["Jwt:Audience"],
                     ClockSkew = TimeSpan.Zero
                 };
+                o.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        if (context.Exception is SecurityTokenExpiredException)
+                        {
+                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            context.Response.ContentType = "application/problem+json";
+                            return context.Response.WriteAsync(JsonSerializer.Serialize(new
+                            {
+                                type = "https://datatracker.ietf.org/doc/html/rfc7235#section-3.1",
+                                title = "Token expired.",
+                                traceId = "",
+                                status = StatusCodes.Status401Unauthorized
+                            }));
+                        }
+
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        context.Response.ContentType = "application/problem+json";
+                        return context.Response.WriteAsync(JsonSerializer.Serialize(new
+                        {
+                            type = "https://datatracker.ietf.org/doc/html/rfc7235#section-3.1",
+                            title = "Authentication failed",
+                            traceId = "",
+                            status = StatusCodes.Status401Unauthorized
+                          
+                        }));
+                    },
+                    OnChallenge = context =>
+                    {
+                        // Skip default behavior
+                        context.HandleResponse();
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        context.Response.ContentType = "application/problem+json";
+                        return context.Response.WriteAsync(JsonSerializer.Serialize(new
+                        {
+                            type = "https://datatracker.ietf.org/doc/html/rfc7235#section-3.1",
+                            title = "Unauthorized: Token is missing or invalid.",                 
+                            traceId = "",
+                            status = StatusCodes.Status401Unauthorized
+                        }));
+                    }
+                };
             });
 
         services.AddHttpContextAccessor();
@@ -87,7 +134,9 @@ public static class DependencyInjection
 
     private static IServiceCollection AddAuthorizationInternal(this IServiceCollection services)
     {
-        services.AddAuthorization();
+        services.AddAuthorization(options => options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build());
 
         services.AddScoped<PermissionProvider>();
 

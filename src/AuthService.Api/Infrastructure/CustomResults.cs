@@ -45,6 +45,7 @@ public static class CustomResults
                 ErrorType.Problem => "https://tools.ietf.org/html/rfc7231#section-6.5.1",
                 ErrorType.NotFound => "https://tools.ietf.org/html/rfc7231#section-6.5.4",
                 ErrorType.Conflict => "https://tools.ietf.org/html/rfc7231#section-6.5.8",
+                ErrorType.Unauthorized => "https://datatracker.ietf.org/doc/html/rfc7235#section-3.1",
                 _ => "https://tools.ietf.org/html/rfc7231#section-6.6.1"
             };
 

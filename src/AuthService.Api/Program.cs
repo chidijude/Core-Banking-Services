@@ -21,8 +21,7 @@ builder.Services
 builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
 
 WebApplication app = builder.Build();
-
-app.MapEndpoints();
+app.UseExceptionHandler("/error");
 
 if (app.Environment.IsDevelopment())
 {
@@ -40,11 +39,15 @@ app.UseRequestContextLogging();
 
 app.UseSerilogRequestLogging();
 
-app.UseExceptionHandler();
+app.UseRouting();
 
 app.UseAuthentication();
-
 app.UseAuthorization();
+app.MapEndpoints();
+
+
+
+
 
 // REMARK: If you want to use Controllers, you'll need this.
 app.MapControllers();

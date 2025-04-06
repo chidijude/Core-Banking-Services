@@ -19,10 +19,12 @@ public sealed class PermissionAuthorizationPolicyProvider : DefaultAuthorization
 
         if (policy is not null)
         {
+            policy.
             return policy;
         }
 
         AuthorizationPolicy permissionPolicy = new AuthorizationPolicyBuilder()
+            .RequireAuthenticatedUser()
             .AddRequirements(new PermissionRequirement(policyName))
             .Build();
 

@@ -78,50 +78,7 @@ public static class DependencyInjection
                     ValidIssuer = configuration["Jwt:Issuer"],
                     ValidAudience = configuration["Jwt:Audience"],
                     ClockSkew = TimeSpan.Zero
-                };
-                o.Events = new JwtBearerEvents
-                {
-                    OnAuthenticationFailed = context =>
-                    {
-                        if (context.Exception is SecurityTokenExpiredException)
-                        {
-                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                            context.Response.ContentType = "application/problem+json";
-                            return context.Response.WriteAsync(JsonSerializer.Serialize(new
-                            {
-                                type = "https://datatracker.ietf.org/doc/html/rfc7235#section-3.1",
-                                title = "Token expired.",
-                                traceId = "",
-                                status = StatusCodes.Status401Unauthorized
-                            }));
-                        }
-
-                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                        context.Response.ContentType = "application/problem+json";
-                        return context.Response.WriteAsync(JsonSerializer.Serialize(new
-                        {
-                            type = "https://datatracker.ietf.org/doc/html/rfc7235#section-3.1",
-                            title = "Authentication failed",
-                            traceId = "",
-                            status = StatusCodes.Status401Unauthorized
-                          
-                        }));
-                    },
-                    OnChallenge = context =>
-                    {
-                        // Skip default behavior
-                        context.HandleResponse();
-                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                        context.Response.ContentType = "application/problem+json";
-                        return context.Response.WriteAsync(JsonSerializer.Serialize(new
-                        {
-                            type = "https://datatracker.ietf.org/doc/html/rfc7235#section-3.1",
-                            title = "Unauthorized: Token is missing or invalid.",                 
-                            traceId = "",
-                            status = StatusCodes.Status401Unauthorized
-                        }));
-                    }
-                };
+                };               
             });
 
         services.AddHttpContextAccessor();
@@ -134,9 +91,7 @@ public static class DependencyInjection
 
     private static IServiceCollection AddAuthorizationInternal(this IServiceCollection services)
     {
-        services.AddAuthorization(options => options.FallbackPolicy = new AuthorizationPolicyBuilder()
-                .RequireAuthenticatedUser()
-                .Build());
+        services.AddAuthorization();
 
         services.AddScoped<PermissionProvider>();
 

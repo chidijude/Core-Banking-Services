@@ -20,7 +20,6 @@ internal sealed class GetById : IEndpoint
         })
         .WithTags(Tags.Users)
         .WithName("GetByUserId")
-        .RequireAuthorization()
-        .RequireAuthorization(Permissions.UsersAccess);
+        .HasPermission(Permissions.UsersAccess);
     }
 }

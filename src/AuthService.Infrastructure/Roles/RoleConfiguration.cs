@@ -13,12 +13,9 @@ internal class RoleConfiguration : IEntityTypeConfiguration<Role>
         builder.ToTable(TableNames.Roles);
         builder.HasKey(r => r.Id);
 
-        builder.HasMany(r => r.Permissions)
+        builder.HasMany(r => r.Permissions)            
             .WithMany()
-            .UsingEntity<RolePermission>();
-
-        builder.HasMany(r => r.Users)
-           .WithMany();
+            .UsingEntity<RolePermission>();       
 
         builder.HasData(Role.GetValues());
     }

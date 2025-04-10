@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AuthService.Infrastructure.Authentication;
+using AuthService.Infrastructure.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using SharedKernel.Infrastructure.Authentication;
 
 namespace SharedKernel.Infrastructure.Authorization;
 
-public sealed class PermissionAuthorizationHandler(IServiceScopeFactory serviceScopeFactory)
+public sealed class PermissionAuthorizationHandler(IServiceScopeFactory serviceScopeFactory )
     : AuthorizationHandler<PermissionRequirement>
 {
     protected override async Task HandleRequirementAsync(
@@ -12,13 +14,10 @@ public sealed class PermissionAuthorizationHandler(IServiceScopeFactory serviceS
         PermissionRequirement requirement)
     {
         // TODO: You definitely want to reject unauthenticated users here.
-        if (context.User is { Identity.IsAuthenticated: true })
-        {
-            // TODO: Remove this call when you implement the PermissionProvider.GetForUserIdAsync
-            context.Succeed(requirement);
-
-            return;
-        }
+        //HashSet<string> permissions = [.. context
+        //    .User
+        //    .Claims.Where(c => c.Type == CustomClaims.Permissions)
+        //    .Select(c => c.Value)];
 
         using IServiceScope scope = serviceScopeFactory.CreateScope();
 

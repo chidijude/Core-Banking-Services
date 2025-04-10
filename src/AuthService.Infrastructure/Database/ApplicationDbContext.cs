@@ -1,4 +1,5 @@
 ﻿using AuthService.Application.Abstractions.Data;
+using AuthService.Domain.Permissions;
 using AuthService.Domain.Users;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
 {
     public DbSet<User> Users { get; set; }
     public DbSet<User> Roles { get; set; }
+    public DbSet<Permission> Permissions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

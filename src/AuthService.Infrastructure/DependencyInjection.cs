@@ -17,6 +17,7 @@ using SharedKernel.Infrastructure.Database;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
+using AuthService.Infrastructure.Authorization;
 
 namespace AuthService.Infrastructure;
 
@@ -84,7 +85,7 @@ public static class DependencyInjection
         services.AddHttpContextAccessor();
         services.AddScoped<IUserContext, UserContext>();
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
-        services.AddSingleton<ITokenProvider, TokenProvider>();
+        services.AddScoped<ITokenProvider, TokenProvider>();
 
         return services;
     }

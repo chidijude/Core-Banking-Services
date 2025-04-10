@@ -12,6 +12,9 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.ToTable(TableNames.Users);
         builder.HasKey(u => u.Id);
 
+        builder.HasMany(u => u.Roles)
+           .WithMany();           
+        
         builder.HasIndex(u => u.Email).IsUnique();
     }
 }

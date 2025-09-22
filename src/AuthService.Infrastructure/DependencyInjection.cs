@@ -48,8 +48,21 @@ public static class DependencyInjection
         services.AddDbContext<ApplicationDbContext>(
             options => options
                 .UseNpgsql(connectionString, npgsqlOptions =>
-                    npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Default))
-                .UseSnakeCaseNamingConvention());
+                {
+                    npgsqlOptions.MigrationsHistoryTable(
+                        HistoryRepository.DefaultTableName,
+                        Schemas.Default //TODO: change schema if needed
+                    );
+
+                    // Enable retry on failure (5 retries, up to 10s delay each)
+                    npgsqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 3,
+                        maxRetryDelay: TimeSpan.FromSeconds(10),
+                        errorCodesToAdd: null
+                    );
+                })
+                .UseSnakeCaseNamingConvention()
+        );
 
         services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
 
